@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 3em;
+      margin-top: 50px;
+    }
+    .banner {
+      font-size: 1.5em;
+      color: #777;
+      margin-bottom: 40px;
+    }
+    .sub-banner {
+      font-size: 1.8em;
+      color: #444;
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
+    .create-button {
+      padding: 15px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+    .create-button:hover {
+      background-color: #45a049;
+    }
+    .logout-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    .logout-button:hover {
+      background-color: #e53935;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to Lists</h1>
+  <div class="banner">Share your passions</div>
+
+  <div class="sub-banner">Your lists</div>
+
+  <form action="/create_list" method="get">
+    <button class="create-button" type="submit">Create New List</button>
+  </form>
+
+  <form action="/logout" method="post">
+    <button class="logout-button" type="submit">Logout</button>
+  </form>
+
+</body>
+</html>

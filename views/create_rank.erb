@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Rank</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-top: 50px;
+    }
+    form {
+      margin-top: 20px;
+      display: inline-block;
+      text-align: left;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .input-field {
+      padding: 10px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .item-label {
+      margin-top: 10px;
+      display: block;
+      font-size: 1em;
+      font-weight: bold;
+    }
+    .submit-button {
+      padding: 15px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.2em;
+      cursor: pointer;
+      width: 100%;
+    }
+    .submit-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+
+  <h1>Create a New Rank</h1>
+  <form action="/save_rank" method="post">
+    <!-- Rank Name -->
+    <label for="rank_name" class="item-label">Rank Name:</label>
+    <input type="text" id="rank_name" name="rank_name" class="input-field" placeholder="Enter Rank Name" required>
+
+    <!-- 10 Individual Items -->
+    <% (1..10).each do |i| %>
+      <label for="item_<%= i %>" class="item-label">Rank <%= i %>:</label>
+      <input type="text" id="item_<%= i %>" name="items[]" class="input-field" placeholder="Enter Item <%= i %>" required>
+    <% end %>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-button">Save Rank</button>
+  </form>
+
+</body>
+</html>

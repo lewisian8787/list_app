@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Lists</title>
+  <title>Ranked!</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -52,13 +52,15 @@
 </head>
 <body>
 
-  <h1>Welcome to Lists</h1>
+  <h1>Welcome to Ranked!</h1>
   <div class="banner">Share your passions</div>
 
   <div class="login-container">
     <h2>Login</h2>
+    <h3>username = test_user</h3>
+    <h3>password = password</h3>
     <form action="/login" method="post">
-      <input type="text" name="username" placeholder="Username" required>
+      <input type="text" name="username" placeholder="Username"  value="<%= @username %>" required>
       <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Log In</button>
     </form>

@@ -21,31 +21,48 @@ end
 
 before do
   @storage = SessionPersistence.new(session)
+  content_type :html
 end
 
 ################## ROUTES
 ##########################
 
 get "/" do
-    erb :index
+    erb :index, layout: false
 end
 
 post "/login" do
     users = { "test_user" => "password" }
     
+    actual_username = "test_user"
+    actual_password = "password"
+    
     username = params[:username]
     password = params[:password]
     #need to add validation logic later
     
-    if users[username] && users[username] == password
-      redirect "/lists"
+    if username == actual_username && password == actual_password
+      redirect "/myranks"
     else
       @error = "Invalid username or password. Please try again."
+      @username = username #preserving the username for future attempts
       erb :index
     end
 end 
 
-get "/lists" do
-  erb :lists
+get "/myranks" do
+  erb :myranks, layout: :layout
+end
+
+get "/create_rank" do
+  erb :create_rank
+end
+
+post "/save_rank" do
+  #yet to do this. Button to save new rank not yet working. 
 end 
 
+post "/logout" do 
+  session.clear
+  redirect '/'
+end 

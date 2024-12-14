@@ -1,0 +1,2 @@
+1. The banner is appearing twice after a failed login attempt. DONE
+2. 

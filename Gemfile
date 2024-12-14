@@ -5,6 +5,8 @@ gem "sinatra-contrib"
 gem "erubis"
 gem "webrick"
 gem "rackup"
+gem "pg"
+gem "logger"
 
 ruby "3.2.2"
 

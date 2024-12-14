@@ -10,6 +10,10 @@ configure do
 end
 
 helpers do
+  def valid_credentials?(username, password)
+    # Hardcoded single user
+    username == "test_user" && password == "password"
+  end
 end
 
 class SessionPersistence
@@ -32,26 +36,20 @@ get "/" do
 end
 
 post "/login" do
-    users = { "test_user" => "password" }
-    
-    actual_username = "test_user"
-    actual_password = "password"
-    
     username = params[:username]
     password = params[:password]
-    #need to add validation logic later
     
-    if username == actual_username && password == actual_password
+    if valid_credentials?(username, password)
       redirect "/myranks"
     else
       @error = "Invalid username or password. Please try again."
-      @username = username #preserving the username for future attempts
-      erb :index
+      #@username = username #preserving the username for future attempts
+      erb :index, layout: false #to prevent the layout file rendering on unsuccessful login attempts
     end
 end 
 
 get "/myranks" do
-  erb :myranks, layout: :layout
+  erb :myranks
 end
 
 get "/create_rank" do

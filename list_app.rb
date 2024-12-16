@@ -2,8 +2,12 @@ require "sinatra"
 require "sinatra/reloader"
 require "sinatra/content_for"
 require "tilt/erubis"
+require "pry"
+require_relative "database_persistence"
 
 configure do
+  #set :logger, Logger.new($stdout)
+  #set :database, Database.new(dbname: "ranked", logger: settings.logger)
   enable :sessions
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => false
@@ -16,16 +20,8 @@ helpers do
   end
 end
 
-class SessionPersistence
-  def initialize(session)
-    @session = session
-    @session[:lists] ||= []
-  end
-end
-
 before do
-  @storage = SessionPersistence.new(session)
-  content_type :html
+  @storage = DatabasePersistence.new(logger)
 end
 
 ################## ROUTES
@@ -40,25 +36,63 @@ post "/login" do
     password = params[:password]
     
     if valid_credentials?(username, password)
-      redirect "/myranks"
+      redirect "/my_ranks"
     else
       @error = "Invalid username or password. Please try again."
-      #@username = username #preserving the username for future attempts
       erb :index, layout: false #to prevent the layout file rendering on unsuccessful login attempts
     end
 end 
 
-get "/myranks" do
-  erb :myranks
+get '/my_ranks' do
+  @lists = @storage.all_lists
+  erb :my_ranks  # Render the 'my_ranks' view
 end
 
 get "/create_rank" do
   erb :create_rank
 end
 
+post "/seed" do 
+  begin
+    @storage.add_seed_data
+    session[:success] = "Successfully added seed data"
+  rescue PG::Error => e
+    session[:error] = "Error adding seed data: #{e.message}"
+  end
+  redirect to("/my_ranks")
+end
+
 post "/save_rank" do
-  #yet to do this. Button to save new rank not yet working. 
-end 
+  rank_name = params[:name]
+  if rank_name.size == 0
+    @error = "The rank name must be at least 1 character long."
+    erb :create_rank
+  else
+    @storage.add_rank(rank_name)
+  end
+
+  redirect to("/my_ranks")
+end
+
+post "/delete_rank" do
+  list_id = params[:list_id].to_i  # Access the list_id, not rank_id
+  @storage.delete_rank(list_id)     # Delete the rank from the database
+  redirect to("/my_ranks")          # Redirect back to the ranks page
+end
+
+
+
+post "/seed" do
+  begin
+    settings.database.add_seed_data
+    session[:success] = "Successfully added seed data"
+  rescue PG::Error => e
+    # Handle the error and log it
+    session[:error] = "Error adding seed data: #{e.message}"
+  end
+  redirect to("/my_ranks")
+end
+
 
 post "/logout" do 
   session.clear

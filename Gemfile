@@ -7,6 +7,7 @@ gem "webrick"
 gem "rackup"
 gem "pg"
 gem "logger"
+gem "pry"
 
 ruby "3.2.2"
 

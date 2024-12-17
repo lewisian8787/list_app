@@ -16,7 +16,7 @@ end
 helpers do
   def valid_credentials?(username, password)
     # Hardcoded single user
-    username == "test_user" && password == "password"
+    username == "test_user" && password == "testing123"
   end
 end
 
@@ -36,6 +36,7 @@ post "/login" do
     password = params[:password]
     
     if valid_credentials?(username, password)
+      session[:username] = username
       redirect "/my_ranks"
     else
       @error = "Invalid username or password. Please try again."
@@ -44,7 +45,8 @@ post "/login" do
 end 
 
 get '/my_ranks' do
-  @lists = @storage.all_lists
+  @lists = @storage.all_lists(session[:username])
+  binding.pry
   erb :my_ranks  # Render the 'my_ranks' view
 end
 

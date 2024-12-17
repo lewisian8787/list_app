@@ -24,25 +24,21 @@ class DatabasePersistence
     @db.exec_params(sql, [rank_id])
   end
 
-  def all_lists
-    sql = "SELECT * FROM lists"
-    result = query(sql)
+  def all_lists(username)
+    # Obtain user id of logged in user from the users table
+    sql = "SELECT id FROM users WHERE username = $1;"
+    result = query(sql, username)
+    logged_in_user_id = result.ntuples
+
+    sql = "SELECT * FROM lists WHERE user_id = $1;"
+    result = query(sql, logged_in_user_id)
 
     result.map do |tuple|
-      { id: tuple["id"].to_i, name: tuple["name"], user_id: tuple["user_id"].to_i }
+      { id: tuple["id"], name: tuple["name"], user_id: tuple["user_id"].to_i }
     end
   end
 
   def add_seed_data
-    # Insert test user into users table
-    sql_users = <<~SQL
-      INSERT INTO users (username, email)
-      VALUES 
-        ('test_user', 'test_user@test.com'),
-        ('johndoe', 'johndoe@example.com');
-    SQL
-    query(sql_users)
-  
     # Insert test ranks into lists table
     sql_lists = <<~SQL
       INSERT INTO lists (name, user_id)

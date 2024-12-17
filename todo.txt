@@ -1,3 +1,8 @@
 1. The banner is appearing twice after a failed login attempt. DONE
 2. Adding an SQL query into /my_ranks route completely breaks it. 
 3. Cannot connect to the database or PSQL entirely. DONE
+4. Currently all lists from database are rendered on my_lists DONE
+
+TO DO TODAY:
+1. Create ERB pages for individual lists
+2. Add delete item buttons within

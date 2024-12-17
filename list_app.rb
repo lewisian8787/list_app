@@ -11,6 +11,20 @@ configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(32)
   set :erb, :escape_html => false
+
+  db = PG.connect(dbname: 'ranked') # Replace with your actual DB connection details
+
+  # Check if the user already exists
+  result = db.exec("SELECT COUNT(*) FROM users WHERE username = 'test_user'")
+
+  # If the user doesn't exist, insert them
+  if result.getvalue(0, 0).to_i == 0
+    db.exec("INSERT INTO users (username, email) VALUES ('test_user', 'test_user@gmail.com')")
+    puts "User 'test_user' created!"
+  else
+    puts "User 'test_user' already exists."
+  end
+  db.close
 end
 
 helpers do
@@ -46,7 +60,6 @@ end
 
 get '/my_ranks' do
   @lists = @storage.all_lists(session[:username])
-  binding.pry
   erb :my_ranks  # Render the 'my_ranks' view
 end
 
@@ -84,16 +97,16 @@ end
 
 
 
-post "/seed" do
-  begin
-    settings.database.add_seed_data
-    session[:success] = "Successfully added seed data"
-  rescue PG::Error => e
-    # Handle the error and log it
-    session[:error] = "Error adding seed data: #{e.message}"
-  end
-  redirect to("/my_ranks")
-end
+# post "/seed" do
+#   begin
+#     settings.database.add_seed_data
+#     session[:success] = "Successfully added seed data"
+#   rescue PG::Error => e
+#     # Handle the error and log it
+#     session[:error] = "Error adding seed data: #{e.message}"
+#   end
+#   redirect to("/my_ranks")
+# end
 
 
 post "/logout" do 

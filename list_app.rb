@@ -30,7 +30,7 @@ end
 helpers do
   def valid_credentials?(username, password)
     # Hardcoded single user
-    username == "test_user" && password == "testing123"
+    username == "test_user" && password == "qwerty"
   end
 end
 
@@ -78,16 +78,33 @@ post "/seed" do
 end
 
 post "/save_rank" do
-  rank_name = params[:name]
-  if rank_name.size == 0
-    @error = "The rank name must be at least 1 character long."
-    erb :create_rank
+  rank_name = params[:name]  # Get the rank name from the form
+  items = params[:items]  # Get the items array from the form
+  # Validate rank name
+  if rank_name.empty? || items.any? { |item| item.empty? }
+    @error = "Rank name and all items are required."
+    erb :create_rank  # Re-render the form with an error message
   else
+    # Save the rank to the database
     @storage.add_rank(rank_name)
+    
+    # Get the user_id from the session (or hardcoded if needed)
+    user_id = 1  # Hardcoded, replace with session[:user_id] if you have login
+  
+    # Get the rank ID (from the newly inserted rank)
+    list_id = @storage.get_list_id_by_name(rank_name, user_id)
+    
+    # Save each item to the items table
+    items.each do |item|
+      @storage.add_item(item, list_id)  # Save each item to the items table
+    end
+    
+    # Redirect to My Ranks page after saving the rank and items
+    redirect to("/my_ranks")
   end
-
-  redirect to("/my_ranks")
 end
+
+
 
 post "/delete_rank" do
   list_id = params[:list_id].to_i  # Access the list_id, not rank_id
@@ -95,18 +112,33 @@ post "/delete_rank" do
   redirect to("/my_ranks")          # Redirect back to the ranks page
 end
 
+# Route to show items of a specific rank
+get '/my_ranks/:id' do
+  list_id = params[:id].to_i
 
+  begin
+    @list = @storage.get_list_by_id(list_id)
+    raise "List not found" if @list.nil?
 
-# post "/seed" do
-#   begin
-#     settings.database.add_seed_data
-#     session[:success] = "Successfully added seed data"
-#   rescue PG::Error => e
-#     # Handle the error and log it
-#     session[:error] = "Error adding seed data: #{e.message}"
-#   end
-#   redirect to("/my_ranks")
-# end
+    @items = @storage.get_items_for_list(list_id)
+  rescue StandardError => e
+    # Log the error for debugging
+    logger.error "Error fetching list and items: #{e.message}"
+
+    # Redirect to an error page or display an error message
+    flash[:error] = "An error occurred. Please try again later."
+    redirect to '/error'
+  end
+
+  erb :items
+end
+
+get '/my_ranks/:id' do
+  list_id = params[:id].to_i  # Get the rank ID from the URL
+  @list = @storage.get_list_by_id(list_id)  # Fetch the list details
+  @items = @storage.get_items_for_list(list_id)  # Fetch items for the list
+  erb :items  # Render the 'items.erb' page
+end
 
 
 post "/logout" do 

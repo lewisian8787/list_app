@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= @list[:name] %> Items</title>
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sub-banner {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .item-list {
+      padding: 0;
+      list-style-type: none;
+      margin: 0;
+      width: 100%; /* Ensure it stretches the width */
+    }
+
+    .item-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px; /* Smaller button */
+      margin: 5px;
+      font-size: 16px; /* Smaller font */
+      cursor: pointer;
+      border-radius: 5px;
+      width: 200px;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .item-button:hover {
+      background-color: #45a049;
+    }
+
+    /* Custom styling for Back to My Ranks button */
+    .back-button {
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      padding: 15px 30px; /* Larger button */
+      font-size: 18px; /* Bigger font */
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+      width: 250px; /* Larger button */
+    }
+
+    .back-button:hover {
+      background-color: #007B9E;
+    }
+  </style>
+</head>
+<body>
+  <div class="sub-banner"><%= @list[:name] %> Items</div>
+
+  <div class="content-wrapper">
+    <ul class="item-list">
+      <% if @items.empty? %>
+        <li>No items in this rank</li>
+      <% else %>
+        <% @items.each_with_index do |item, index| %>
+          <li>
+            <span><strong><%= index + 1 %>.</strong> </span> <!-- Display the item number -->
+            <button class="item-button"><%= item[:name] %></button>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+
+    <!-- Custom back button -->
+    <form action="/my_ranks" method="get">
+      <button type="submit" class="back-button">Back to My Ranks</button>
+    </form>
+  </div>
+</body>
+</html>

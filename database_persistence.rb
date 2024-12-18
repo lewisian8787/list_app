@@ -14,6 +14,34 @@ class DatabasePersistence
     @db.exec_params(statement, params)
   end
 
+  def get_list_id_by_name(rank_name, user_id)
+    sql = "SELECT id FROM lists WHERE name = $1 AND user_id = $2"
+    result = @db.exec_params(sql, [rank_name, user_id])
+    result[0]["id"].to_i
+  end
+
+  # Method to add an item to the items table
+  def add_item(item_name, list_id)
+    sql = "INSERT INTO items (name, list_id) VALUES ($1, $2)"
+    @db.exec_params(sql, [item_name, list_id])
+  end
+
+  def get_list_by_id(list_id)
+    sql = "SELECT * FROM lists WHERE id = $1"
+    result = query(sql, list_id)
+    tuple = result[0]  # There should be only one row returned
+    { id: tuple["id"], name: tuple["name"], user_id: tuple["user_id"].to_i }
+  end
+
+  def get_items_for_list(list_id)
+    sql = "SELECT * FROM items WHERE list_id = $1"
+    result = query(sql, list_id)
+
+    result.map do |tuple|
+      { id: tuple["id"], name: tuple["name"], list_id: tuple["list_id"].to_i }
+    end
+  end
+
   def add_rank(rank_name)
     sql = "INSERT INTO lists (name, user_id) VALUES ($1, 1)"
     @db.exec_params(sql, [rank_name])
@@ -28,7 +56,7 @@ class DatabasePersistence
     # Obtain user id of logged in user from the users table
     sql = "SELECT id FROM users WHERE username = $1;"
     result = query(sql, username)
-    logged_in_user_id = result.ntuples
+    logged_in_user_id = result[0]["id"].to_i
 
     sql = "SELECT * FROM lists WHERE user_id = $1;"
     result = query(sql, logged_in_user_id)
@@ -49,48 +77,49 @@ class DatabasePersistence
     SQL
     query(sql_lists)
   
-    # Insert test items into items table
+    # Insert test items into items table (no description column)
     sql_items = <<~SQL
-      INSERT INTO items (name, description, list_id)
+      INSERT INTO items (name, list_id)
       VALUES 
         -- Items for "Favorite Recipes" (list_id = 1)
-        ('Spaghetti Bolognese', NULL, 1),
-        ('Chicken Curry', NULL, 1),
-        ('Chocolate Cake', NULL, 1),
-        ('Grilled Cheese Sandwich', NULL, 1),
-        ('Caesar Salad', NULL, 1),
-        ('Beef Stroganoff', NULL, 1),
-        ('Vegetable Stir Fry', NULL, 1),
-        ('BBQ Ribs', NULL, 1),
-        ('Apple Pie', NULL, 1),
-        ('Fish Tacos', NULL, 1),
-        
+        ('Spaghetti Bolognese', 1),
+        ('Chicken Curry', 1),
+        ('Chocolate Cake', 1),
+        ('Grilled Cheese Sandwich', 1),
+        ('Caesar Salad', 1),
+        ('Beef Stroganoff', 1),
+        ('Vegetable Stir Fry', 1),
+        ('BBQ Ribs', 1),
+        ('Apple Pie', 1),
+        ('Fish Tacos', 1),
+          
         -- Items for "Favorite Action Movies" (list_id = 2)
-        ('Die Hard', NULL, 2),
-        ('Mad Max: Fury Road', NULL, 2),
-        ('The Dark Knight', NULL, 2),
-        ('John Wick', NULL, 2),
-        ('The Matrix', NULL, 2),
-        ('Gladiator', NULL, 2),
-        ('Terminator 2: Judgment Day', NULL, 2),
-        ('Inception', NULL, 2),
-        ('Mission: Impossible - Fallout', NULL, 2),
-        ('Black Panther', NULL, 2),
-  
+        ('Die Hard', 2),
+        ('Mad Max: Fury Road', 2),
+        ('The Dark Knight', 2),
+        ('John Wick', 2),
+        ('The Matrix', 2),
+        ('Gladiator', 2),
+        ('Terminator 2: Judgment Day', 2),
+        ('Inception', 2),
+        ('Mission: Impossible - Fallout', 2),
+        ('Black Panther', 2),
+    
         -- Items for "Favorite Love Songs" (list_id = 3)
-        ('I Will Always Love You', NULL, 3),
-        ('Perfect', NULL, 3),
-        ('My Heart Will Go On', NULL, 3),
-        ('Unchained Melody', NULL, 3),
-        ('Endless Love', NULL, 3),
-        ('All of Me', NULL, 3),
-        ('I Can Not Handle This', NULL, 3),
-        ('At Last', NULL, 3),
-        ('Thinking Out Loud', NULL, 3),
-        ('Something', NULL, 3);
+        ('I Will Always Love You', 3),
+        ('Perfect', 3),
+        ('My Heart Will Go On', 3),
+        ('Unchained Melody', 3),
+        ('Endless Love', 3),
+        ('All of Me', 3),
+        ('I Can Not Handle This', 3),
+        ('At Last', 3),
+        ('Thinking Out Loud', 3),
+        ('Something', 3);
     SQL
     query(sql_items)
   end
+  
   
   
 

@@ -104,11 +104,12 @@
     <!-- Display the list of ranks (list names) as buttons -->
     <ul>
       <% if @lists.empty? %>
-        <li><button class="rank-button">No Ranks available</button></li>
+        <li><p>No Ranks available</p></li>
       <% else %>
         <% @lists.each do |list| %>
           <li>
-            <form action="/some_action" method="get">
+            <!-- Form to show items for the specific rank -->
+            <form action="/my_ranks/<%= list[:id] %>" method="get">
               <button type="submit" class="rank-button">
                 <%= list[:name] %>
               </button>

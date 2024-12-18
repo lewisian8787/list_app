@@ -1,11 +1,107 @@
 <!-- create_rank.erb -->
-<h2>Create a New Rank</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create a New Rank</title>
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
 
-<form action="/save_rank" method="post">
-  <label for="name">Rank Name:</label>
-  <input type="text" id="name" name="name" required>
-  
-  <button type="submit" class="save-button">Save Rank</button>
-</form>
+    .sub-banner {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
 
-<a href="/my_ranks">Back to My Ranks</a>
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    /* Styling the form and input fields */
+    label {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+      margin: 5px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    /* Button styles */
+    .save-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 250px;
+      text-align: center;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+    }
+
+    .save-button:hover {
+      background-color: #45a049;
+    }
+
+    /* Back link styling */
+    a {
+      font-size: 16px;
+      text-decoration: none;
+      color: #4CAF50;
+      margin-top: 20px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Styling for input fields (10 items) */
+    .item-input {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sub-banner">Create a New Rank</div>
+
+  <div class="content-wrapper">
+    <form action="/save_rank" method="post">
+      <!-- Rank Name -->
+      <label for="name">Rank Name:</label>
+      <input type="text" id="name" name="name" required><br><br>
+      
+      <!-- 10 item input fields -->
+      <% (1..10).each do |i| %>
+        <label for="item_<%= i %>">Item <%= i %>:</label>
+        <input type="text" id="item_<%= i %>" name="items[]" class="item-input" required><br><br>
+      <% end %>
+
+      <button type="submit" class="save-button">Save Rank</button>
+    </form>
+
+    <a href="/my_ranks">Back to My Ranks</a>
+  </div>
+</body>
+</html>

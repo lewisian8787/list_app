@@ -4,5 +4,7 @@
 4. Currently all lists from database are rendered on my_lists DONE
 
 TO DO TODAY:
-1. Create ERB pages for individual lists
-2. Add delete item buttons within
+1. Create ERB pages for individual lists DONE
+2. Add delete item buttons within DONE 
+
+
